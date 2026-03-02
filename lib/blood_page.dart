@@ -6,7 +6,6 @@ class BloodPage extends StatefulWidget {
   @override
   State<BloodPage> createState() => _BloodPageState();
 }
-
 class _BloodPageState extends State<BloodPage> {
   int selectedTab = 0;
   String selectedArea = 'All';
@@ -14,7 +13,6 @@ class _BloodPageState extends State<BloodPage> {
 
   final List<String> areas = ['All', 'Mirpur', 'Dhanmondi', 'Gulshan', 'Uttara', 'Mohammadpur', 'Banani'];
   final List<String> bloodTypes = ['All', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
-
   final List<Map<String, String>> donors = [
     {'name': 'Rahim Uddin',   'blood': 'A+',  'area': 'Mirpur',      'address': '12, Mirpur Road, Dhaka',      'last': 'Last donated: 3 months ago', 'phone': '01711-234567'},
     {'name': 'Sumaiya Akter', 'blood': 'O+',  'area': 'Dhanmondi',   'address': '45, Dhanmondi, Dhaka',        'last': 'Last donated: 6 months ago', 'phone': '01812-345678'},
@@ -25,7 +23,6 @@ class _BloodPageState extends State<BloodPage> {
     {'name': 'Sabbir Rahman', 'blood': 'O+',  'area': 'Mirpur',      'address': '34, Mirpur-10, Dhaka',        'last': 'Last donated: 1 month ago',  'phone': '01611-111222'},
     {'name': 'Fatema Khatun', 'blood': 'B-',  'area': 'Dhanmondi',   'address': '67, Dhanmondi-27, Dhaka',     'last': 'Last donated: 8 months ago', 'phone': '01911-333444'},
   ];
-
   final List<Map<String, String>> banks = [
     {'name': 'Dhaka Blood Bank',     'area': 'Mirpur',      'address': '15, Mirpur-1, Dhaka',        'available': 'A+, B+, O+, AB+',  'phone': '01711-111000'},
     {'name': 'Life Blood Center',    'area': 'Dhanmondi',   'address': '32, Dhanmondi-15, Dhaka',    'available': 'A+, A-, O+, O-',   'phone': '01811-222000'},
@@ -33,7 +30,6 @@ class _BloodPageState extends State<BloodPage> {
     {'name': 'Uttara Blood Center',  'area': 'Uttara',      'address': '45, Uttara Sector-4, Dhaka', 'available': 'O+, O-, A+, B+',  'phone': '01611-444000'},
     {'name': 'Red Cross Blood Bank', 'area': 'Mohammadpur', 'address': '22, Mohammadpur, Dhaka',     'available': 'All Blood Types',  'phone': '01511-555000'},
   ];
-
   List<Map<String, String>> get filteredDonors {
     return donors.where((d) {
       bool areaOk  = selectedArea  == 'All' || d['area']  == selectedArea;
@@ -51,7 +47,6 @@ class _BloodPageState extends State<BloodPage> {
   }
 
   void showEmergencyDialog() {
-    // Text changes based on which tab the user is on
     String requestText = selectedTab == 0
         ? 'Request will be sent to ${filteredDonors.length} donor.'
         : 'Request will be sent to ${filteredBanks.length} blood bank.';
@@ -196,7 +191,6 @@ class _BloodPageState extends State<BloodPage> {
       body: Column(
         children: [
 
-          // Stats Banner
           Container(
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
@@ -224,8 +218,6 @@ class _BloodPageState extends State<BloodPage> {
           ),
 
           const SizedBox(height: 20),
-
-          // Tabs
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Container(
@@ -241,8 +233,6 @@ class _BloodPageState extends State<BloodPage> {
           ),
 
           const SizedBox(height: 15),
-
-          // Filters
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
@@ -284,8 +274,6 @@ class _BloodPageState extends State<BloodPage> {
           ),
 
           const SizedBox(height: 12),
-
-          // List
           Expanded(
             child: selectedTab == 0 ? _donorList() : _bankList(),
           ),
@@ -293,7 +281,6 @@ class _BloodPageState extends State<BloodPage> {
       ),
     );
   }
-
   Widget _donorList() {
     if (filteredDonors.isEmpty) {
       return Center(
@@ -319,6 +306,7 @@ class _BloodPageState extends State<BloodPage> {
           subtitle: d['address']!,
           bottom: d['last']!,
           bottomIcon: Icons.access_time,
+          phone: d['phone']!,
         );
       },
     );
@@ -349,6 +337,7 @@ class _BloodPageState extends State<BloodPage> {
           subtitle: b['address']!,
           bottom: b['available']!,
           bottomIcon: Icons.water_drop_outlined,
+          phone: b['phone']!,
         );
       },
     );
@@ -360,6 +349,7 @@ class _BloodPageState extends State<BloodPage> {
     required String subtitle,
     required String bottom,
     required IconData bottomIcon,
+    required String phone,
   }) {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -401,7 +391,21 @@ class _BloodPageState extends State<BloodPage> {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Phone Number'),
+                  content: Text(phone),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('OK'),
+                    ),
+                  ],
+                ),
+              );
+            },
             icon: const Icon(Icons.phone_rounded, color: Color(0xFFFF8080)),
           ),
         ],
